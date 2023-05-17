@@ -4,7 +4,7 @@ import InfoCards from '../InfoCards/InfoCards';
 import ServiceCarts from '../Services/ServiceCarts';
 import Treatment from '../Services/Treatment';
 import MakeAppointment from '../MakeAppointment/MakeAppointment';
-import Testimonial from '../Testtimonial/Testimonial';
+import Testimonial from '../Testimonial/Testimonial';
 
 const Home = () => {
     return (
