@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-
+import { AuthContext } from '../../../contexts/AuthProvider';
+import { toast } from 'react-hot-toast';
+import profile from '../../../assets/icons/profile-user.png';
 const Navbar = () => {
+
+    const { user, logOut } = useContext(AuthContext);
+
+    const handleLogout = _ => {
+        logOut()
+            .then(res => toast.success('Logout Successful!'))
+            .catch(err => toast.error(err.message))
+    }
 
     const menuItems = <>
         <li><Link className='hover:bg-cyan-300' to='/'>Home</Link></li>
@@ -9,7 +19,26 @@ const Navbar = () => {
         <li><Link className='hover:bg-cyan-300' to='/appointment'>Appointment</Link></li>
         <li><Link className='hover:bg-cyan-300' to='/reviews'>Reviews</Link></li>
         <li><Link className='hover:bg-cyan-300' to='/contact'>Contact Us</Link></li>
-        <li><Link className='hover:bg-cyan-300' to='/login'>Login</Link></li>
+        {user?.uid ?
+            <>
+                <div className="dropdown dropdown-end">
+                    <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                        <div className="rounded-full">
+                            {user.photoURL ? <img src={user?.photoURL} alt='User' /> :
+                                <img src={profile} alt='profile' />}
+                        </div>
+                    </label>
+                    <ul tabIndex={0} className="mt-3 p-2 shadow-lg bg-base-100 menu menu-compact dropdown-content rounded-box w-52 flex items-center">
+                        <li><button className='hover:bg-cyan-300/75 font-bold'>
+                            <span className='font-bold text-red-400 mx-auto'>{user?.displayName}</span>
+                        </button></li>
+                        <li><button onClick={handleLogout} className='hover:bg-red-400/50 font-bold'>Sign Out</button></li>
+                    </ul>
+                </div>
+
+            </>
+            : <li><Link className='hover:bg-cyan-300' to='/login'>Login</Link></li>}
+
     </>
 
     return (

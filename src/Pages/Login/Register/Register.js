@@ -2,22 +2,28 @@ import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
+import { toast } from 'react-hot-toast';
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const { setUser, setLoading, createUser } = useContext(AuthContext);
+    const { setLoading, createUser, updateUserProfile } = useContext(AuthContext);
 
     const handleSignUp = data => {
         createUser(data.email, data.password)
             .then(result => {
-                const user = result.user;
-                console.log(user);
-                setUser(user);
+                handleUpdateUserProfile(data?.name, data?.photoURL)
+                toast.success('Registered Successfully!')
                 setLoading(false);
             })
-            .catch(err => console.log(err))
+            .catch(err => toast.error(err.message));
     }
+
+    const handleUpdateUserProfile = (name, photoURL = null) => {
+        updateUserProfile({ displayName: name, photoURL: photoURL })
+            .then(_ => { })
+            .then();
+    };
 
     return (
         <div className='h-[700px] flex justify-center items-center'>
