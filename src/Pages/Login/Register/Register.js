@@ -1,19 +1,23 @@
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
 import { toast } from 'react-hot-toast';
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const { setLoading, createUser, updateUserProfile, googleSignIn } = useContext(AuthContext);
 
-    const { setLoading, createUser, updateUserProfile } = useContext(AuthContext);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const from = location.state?.from?.pathname || '/';
 
     const handleSignUp = data => {
         createUser(data.email, data.password)
             .then(result => {
                 handleUpdateUserProfile(data?.name, data?.photoURL)
                 toast.success('Registered Successfully!')
+                navigate(from, { replace: true });
                 setLoading(false);
             })
             .catch(err => toast.error(err.message));
@@ -24,6 +28,16 @@ const Register = () => {
             .then(_ => { })
             .then();
     };
+
+    const handleGoogleSignIn = _ => {
+        googleSignIn()
+            .then(res => {
+                toast.success('Login Successfully!')
+                navigate(from, { replace: true });
+                setLoading(false);
+            })
+            .catch(err => toast.error(err.message));
+    }
 
     return (
         <div className='h-[700px] flex justify-center items-center'>
@@ -63,7 +77,7 @@ const Register = () => {
                 </form>
                 <p>Already have an account? <Link to='/login' className='text-blue-600 font-bold'>Please Login</Link> </p>
                 <div className="divider">OR</div>
-                <button className="btn btn-accent w-full">Continue with Google</button>
+                <button onClick={handleGoogleSignIn} className="btn btn-accent w-full">Continue with Google</button>
             </div>
         </div>
     );

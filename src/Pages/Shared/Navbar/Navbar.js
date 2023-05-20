@@ -19,6 +19,7 @@ const Navbar = () => {
         <li><Link className='hover:bg-cyan-300' to='/appointment'>Appointment</Link></li>
         <li><Link className='hover:bg-cyan-300' to='/reviews'>Reviews</Link></li>
         <li><Link className='hover:bg-cyan-300' to='/contact'>Contact Us</Link></li>
+        <li><Link className='hover:bg-cyan-300' to='/dashboard'>Dashboard</Link></li>
         {user?.uid ?
             <>
                 <div className="dropdown dropdown-end">

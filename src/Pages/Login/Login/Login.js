@@ -1,16 +1,31 @@
 import React, { useContext } from 'react';
 import { useForm } from "react-hook-form";
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
 import { toast } from 'react-hot-toast';
 const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
-    const { signIn, setLoading } = useContext(AuthContext);
+    const { signIn, setLoading, googleSignIn } = useContext(AuthContext);
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    const from = location.state?.from?.pathname || '/';
 
     const handleLogin = data => {
         signIn(data.email, data.password)
             .then(result => {
                 toast.success('Login Successfully!')
+                navigate(from, { replace: true });
+                setLoading(false);
+            })
+            .catch(err => toast.error(err.message));
+    }
+
+    const handleGoogleSignIn = _ => {
+        googleSignIn()
+            .then(res => {
+                toast.success('Login Successfully!')
+                navigate(from, { replace: true });
                 setLoading(false);
             })
             .catch(err => toast.error(err.message));
@@ -43,7 +58,7 @@ const Login = () => {
                 </form>
                 <p>New to Doctors Portal? <Link to='/register' className='text-blue-600 font-bold'>Create new account</Link> </p>
                 <div className="divider">OR</div>
-                <button className="btn btn-accent w-full">Continue with Google</button>
+                <button onClick={handleGoogleSignIn} className="btn btn-accent w-full">Continue with Google</button>
             </div>
         </div>
     );
