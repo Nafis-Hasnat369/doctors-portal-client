@@ -1,28 +1,32 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Navbar from '../Pages/Shared/Navbar/Navbar';
 import { Link, Outlet } from 'react-router-dom';
+import useAdmin from '../hooks/useAdmin';
+import { AuthContext } from '../contexts/AuthProvider';
 
 const DashboardLayout = () => {
+    const { user } = useContext(AuthContext);
+    const [isAdmin] = useAdmin(user?.email);
+
     return (
         <div>
             <Navbar />
             <div className="drawer drawer-mobile">
-                <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-                <div className="drawer-content flex flex-col items-center justify-center">
+                <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
+                <div className="drawer-content">
                     <Outlet />
-                    <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label>
-
                 </div>
                 <div className="drawer-side">
-                    <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
+                    <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
                     <ul className="menu p-4 w-80 bg-base-100 text-base-content">
-                        <li><Link>Sidebar Item 1</Link></li>
-                        <li><Link>Sidebar Item 2</Link></li>
+                        <li><Link to='/dashboard'>My Appointments</Link></li>
+                        {
+                            isAdmin &&
+                            <li><Link to='/dashboard/allUsers'>All Users</Link></li>
+                        }
                     </ul>
-
                 </div>
             </div>
-            <Outlet />
         </div>
     );
 };

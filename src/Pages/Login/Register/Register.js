@@ -1,24 +1,30 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
 import { toast } from 'react-hot-toast';
+import useToken from '../../../hooks/useToken';
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const { setLoading, createUser, updateUserProfile, googleSignIn } = useContext(AuthContext);
 
-    const location = useLocation();
+    const [createdUserEmail, setCreatedUserEmail] = useState('');
+    const [token] = useToken(createdUserEmail);
     const navigate = useNavigate();
-    const from = location.state?.from?.pathname || '/';
+
+    if (token) {
+        navigate('/');
+        setLoading(false);
+    }
 
     const handleSignUp = data => {
         createUser(data.email, data.password)
             .then(result => {
-                handleUpdateUserProfile(data?.name, data?.photoURL)
-                toast.success('Registered Successfully!')
-                navigate(from, { replace: true });
-                setLoading(false);
+                handleUpdateUserProfile(data?.name, data?.photoURL);
+                saveUser(data.name, data.email)
+                toast.success('New User created Successfully!')
+                setCreatedUserEmail(data.email)
             })
             .catch(err => toast.error(err.message));
     }
@@ -29,11 +35,23 @@ const Register = () => {
             .then();
     };
 
+    const saveUser = (name, email) => {
+        const user = { name, email };
+        fetch(`http://localhost:5000/users`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(user)
+        })
+            .then(res => res.json())
+            .then(data => { })
+    }
+
+
     const handleGoogleSignIn = _ => {
         googleSignIn()
             .then(res => {
                 toast.success('Login Successfully!')
-                navigate(from, { replace: true });
+                navigate('/');
                 setLoading(false);
             })
             .catch(err => toast.error(err.message));
