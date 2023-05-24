@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
@@ -13,10 +13,12 @@ const Register = () => {
     const [token] = useToken(createdUserEmail);
     const navigate = useNavigate();
 
-    if (token) {
-        navigate('/');
-        setLoading(false);
-    }
+    useEffect(() => {
+        if (token) {
+            navigate('/');
+            setLoading(false);
+        }
+    }, [token, navigate, setLoading]);
 
     const handleSignUp = data => {
         createUser(data.email, data.password)

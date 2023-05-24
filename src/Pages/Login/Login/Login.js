@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
@@ -13,10 +13,12 @@ const Login = () => {
     const navigate = useNavigate();
     const from = location.state?.from?.pathname || '/';
 
-    if (token) {
-        navigate(from, { replace: true });
-        setLoading(false);
-    };
+    useEffect(() => {
+        if (token) {
+            navigate(from, { replace: true });
+            setLoading(false);
+        }
+    }, [token, navigate, from, setLoading]);
 
     const handleLogin = data => {
         signIn(data.email, data.password)
