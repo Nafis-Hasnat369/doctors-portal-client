@@ -62,7 +62,7 @@ const ManageDoctors = () => {
                                 <th>{i + 1}</th>
                                 <td>
                                     <div className="avatar">
-                                        <div className="w-18 rounded-full">
+                                        <div className="w-20 rounded-full">
                                             <img src={doctor.image} alt='doctor' />
                                         </div>
                                     </div>
