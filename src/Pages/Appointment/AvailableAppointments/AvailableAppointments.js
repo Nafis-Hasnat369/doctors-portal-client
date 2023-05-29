@@ -11,14 +11,14 @@ const AvailableAppointments = ({ selectedDate }) => {
 
     // const { data: appointmentOptions = [] } = useQuery({
     //     queryKey: [`appointmentOptions`],
-    //     queryFn: _ => fetch(`http://localhost:5000/appointmentOptions`)
+    //     queryFn: _ => fetch(`https://doctors-portal-server-six-eosin.vercel.app/appointmentOptions`)
     //         .then(res => res.json())
     // })
 
     const { data: appointmentOptions = [], refetch, isLoading } = useQuery({
         queryKey: [`appointmentOptions`, date],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/appointmentOptions?date=${date}`);
+            const res = await fetch(`https://doctors-portal-server-six-eosin.vercel.app/appointmentOptions?date=${date}`);
             const data = await res.json();
             return data;
         }
